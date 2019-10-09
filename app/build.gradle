@@ -36,10 +36,13 @@ android {
     lintOptions {
         abortOnError false
     }
-    
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 }
 
@@ -55,4 +58,7 @@ dependencies {
 
     implementation 'org.web3j:core:4.1.0-android'
     implementation 'org.bitcoinj:bitcoinj-core:0.14.7'
+
+    // TokenCore
+    implementation 'com.github.consenlabs:token-core-android:v0.1'
 }
