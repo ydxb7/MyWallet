@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -63,11 +65,33 @@ class MainActivity : AppCompatActivity(), KeystoreStorage {
         WalletManager.storage = this
         WalletManager.scanWallets()
 
+        setupWidgets()
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.update_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.updateMenu){
+            Log.d(TAG, "update the balances")
+            Toast.makeText(this, "update the balances.", Toast.LENGTH_SHORT).show()
+            val balance1 = getBalance(wallet1.address)
+            balanceTextView1.text = balance1.toString()
+            val balance2 = getBalance(wallet2.address)
+            balanceTextView2.text = balance2.toString()
+        }
+        return true
+    }
+
+    private fun setupWidgets() {
         sampleMnemonicBtn1.setOnClickListener { mnemonicEditText1.setText(SAMPLE_MNEMONIC1) }
         sampleMnemonicBtn2.setOnClickListener { mnemonicEditText2.setText(SAMPLE_MNEMONIC2) }
 
         getWalletBtn1.setOnClickListener {
-            if(mnemonicEditText1.text.equals("")){
+            if (mnemonicEditText1.text.equals("")) {
                 Toast.makeText(this, "you can't use an empty mnemonic.", Toast.LENGTH_SHORT).show()
             } else {
                 identity1 = Identity.recoverIdentity(
@@ -86,7 +110,7 @@ class MainActivity : AppCompatActivity(), KeystoreStorage {
         }
 
         getWalletBtn2.setOnClickListener {
-            if(mnemonicEditText2.text.equals("")){
+            if (mnemonicEditText2.text.equals("")) {
                 Toast.makeText(this, "you can't use an empty mnemonic.", Toast.LENGTH_SHORT).show()
             } else {
                 identity2 = Identity.recoverIdentity(
@@ -113,7 +137,6 @@ class MainActivity : AppCompatActivity(), KeystoreStorage {
             Log.d(TAG, "send 1 ETH to account 1")
             send(wallet2, wallet1.address)
         }
-
     }
 
     private fun send(fromWallet: Wallet, toAddress: String){
@@ -149,8 +172,6 @@ class MainActivity : AppCompatActivity(), KeystoreStorage {
                         Toast.makeText(this@MainActivity, "Transaction failed!", Toast.LENGTH_SHORT).show()
                     }
                 }
-
-
             }
         }
     }
