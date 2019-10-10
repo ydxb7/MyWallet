@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
@@ -48,6 +49,12 @@ class MainActivity : AppCompatActivity(), KeystoreStorage {
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main)
 
+    private lateinit var identity1: Identity
+    private lateinit var identity2: Identity
+
+    private lateinit var wallet1: Wallet
+    private lateinit var wallet2: Wallet
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,63 +63,56 @@ class MainActivity : AppCompatActivity(), KeystoreStorage {
         WalletManager.storage = this
         WalletManager.scanWallets()
 
-//        web3j = Web3j.build(HttpService("https://ropsten.infura.io/llyrtzQ3YhkdESt2Fzrk", httpClient, false))
-
         sampleMnemonicBtn1.setOnClickListener { mnemonicEditText1.setText(SAMPLE_MNEMONIC1) }
         sampleMnemonicBtn2.setOnClickListener { mnemonicEditText2.setText(SAMPLE_MNEMONIC2) }
 
+        getWalletBtn1.setOnClickListener {
+            if(mnemonicEditText1.text.equals("")){
+                Toast.makeText(this, "you can't use an empty mnemonic.", Toast.LENGTH_SHORT).show()
+            } else {
+                identity1 = Identity.recoverIdentity(
+                    mnemonicEditText1.text.toString(),
+                    "identity1",
+                    "",
+                    "",
+                    Network.ROPSTEN,
+                    Metadata.NONE
+                )
+                Log.d(TAG, "get identity1")
+                wallet1 = identity1.wallets[0]
+                val balance = getBalance(wallet1.address)
+                balanceTextView1.text = balance.toString()
+            }
+        }
 
+        getWalletBtn2.setOnClickListener {
+            if(mnemonicEditText2.text.equals("")){
+                Toast.makeText(this, "you can't use an empty mnemonic.", Toast.LENGTH_SHORT).show()
+            } else {
+                identity2 = Identity.recoverIdentity(
+                    mnemonicEditText2.text.toString(),
+                    "identity2",
+                    "",
+                    "",
+                    Network.ROPSTEN,
+                    Metadata.NONE
+                )
+                Log.d(TAG, "get identity2")
+                wallet2 = identity2.wallets[0]
+                val balance = getBalance(wallet2.address)
+                balanceTextView2.text = balance.toString()
+            }
+        }
 
+        sendToAccount2Btn.setOnClickListener {
+            Log.d(TAG, "send 1 ETH to account 2")
+            send(wallet1, wallet2.address)
+        }
 
-        val identity1 = Identity.recoverIdentity(
-            SAMPLE_MNEMONIC1,
-            "identity1",
-            "",
-            "",
-            Network.ROPSTEN,
-            Metadata.NONE
-        )
-
-        val identity2 = Identity.recoverIdentity(
-            SAMPLE_MNEMONIC2,
-            "identity2",
-            "",
-            "",
-            Network.ROPSTEN,
-            Metadata.NONE
-        )
-
-        val ethereumWallet1 = identity1.wallets[0]
-        val ethereumWallet2 = identity2.wallets[0]
-
-        val prvKey1 = WalletManager.exportPrivateKey(ethereumWallet1.id, "")
-        val prvKey2 = WalletManager.exportPrivateKey(ethereumWallet2.id, "")
-        Log.d(TAG, "PrivateKey1: $prvKey1")
-        Log.d(TAG, "PrivateKey2: $prvKey2")
-        val mnemonic1 = WalletManager.exportMnemonic(ethereumWallet1.id, "").mnemonic
-        val mnemonic2 = WalletManager.exportMnemonic(ethereumWallet2.id, "").mnemonic
-        Log.d(TAG, "Mnemonic1: $mnemonic1")
-        Log.d(TAG, "Mnemonic2: $mnemonic2")
-        val json1 = WalletManager.exportKeystore(ethereumWallet1.id, "")
-        val json2 = WalletManager.exportKeystore(ethereumWallet2.id, "")
-        Log.d(TAG, "Keystore1: $json1")
-        Log.d(TAG, "Keystore2: $json2")
-
-        Log.d(TAG, "Adress1: ${ethereumWallet1.address}")
-        Log.d(TAG, "Adress2: ${ethereumWallet2.address}")
-
-        // get balance
-        Log.d(TAG, "balance: ${getBalance(ethereumWallet1.address)}")
-        Log.d(TAG, "balance: ${getBalance(ethereumWallet2.address)}")
-
-        // send
-        // keystore 文件路径
-        val directory = File(filesDir, "wallets")
-        val f = File(directory, "${ethereumWallet1.id}.json")
-        Log.d(TAG, "is file exist: ${f.exists()}")
-
-        send(ethereumWallet1, ethereumWallet2.address)
-
+        sendToAccount1Btn.setOnClickListener {
+            Log.d(TAG, "send 1 ETH to account 1")
+            send(wallet2, wallet1.address)
+        }
 
     }
 
@@ -142,6 +142,14 @@ class MainActivity : AppCompatActivity(), KeystoreStorage {
 
                 Log.d(TAG, ethSendTransaction.toString())
                 Log.d(TAG, "transactionHash: ${ethSendTransaction.transactionHash}")
+                uiHandler.post{
+                    if(ethSendTransaction.transactionHash != null){
+                        Toast.makeText(this@MainActivity, "Transaction successfully!", Toast.LENGTH_SHORT).show()
+                    } else{
+                        Toast.makeText(this@MainActivity, "Transaction failed!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
 
             }
         }
