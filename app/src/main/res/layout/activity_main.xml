@@ -51,7 +51,7 @@
             android:id="@+id/sampleMnemonicBtn1" app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="8dp"
             android:layout_marginTop="8dp" app:layout_constraintTop_toBottomOf="@+id/mnemonicEditText1"/>
     <Button
-            android:text="get wallet1"
+            android:text="import wallet1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/getWalletBtn1" app:layout_constraintStart_toEndOf="@+id/sampleMnemonicBtn1"
@@ -66,7 +66,7 @@
             app:layout_constraintTop_toBottomOf="@+id/mnemonicEditText2" app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="8dp"/>
     <Button
-            android:text="get wallet2"
+            android:text="import wallet2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/getWalletBtn2" app:layout_constraintStart_toEndOf="@+id/sampleMnemonicBtn2"

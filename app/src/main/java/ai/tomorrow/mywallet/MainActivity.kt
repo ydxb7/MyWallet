@@ -79,9 +79,9 @@ class MainActivity : AppCompatActivity(), KeystoreStorage {
             Log.d(TAG, "update the balances")
             Toast.makeText(this, "update the balances.", Toast.LENGTH_SHORT).show()
             val balance1 = getBalance(wallet1.address)
-            balanceTextView1.text = balance1.toString()
+            balanceTextView1.text = "$balance1 ETH"
             val balance2 = getBalance(wallet2.address)
-            balanceTextView2.text = balance2.toString()
+            balanceTextView2.text = "$balance2 ETH"
         }
         return true
     }
@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity(), KeystoreStorage {
                 Log.d(TAG, "get identity1")
                 wallet1 = identity1.wallets[0]
                 val balance = getBalance(wallet1.address)
-                balanceTextView1.text = balance.toString()
+                balanceTextView1.text = "$balance ETH"
             }
         }
 
@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity(), KeystoreStorage {
                 Log.d(TAG, "get identity2")
                 wallet2 = identity2.wallets[0]
                 val balance = getBalance(wallet2.address)
-                balanceTextView2.text = balance.toString()
+                balanceTextView2.text = "$balance ETH"
             }
         }
 
