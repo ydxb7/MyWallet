@@ -61,4 +61,8 @@ dependencies {
 
     // TokenCore
     implementation 'com.github.consenlabs:token-core-android:v0.1'
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.0"
 }
